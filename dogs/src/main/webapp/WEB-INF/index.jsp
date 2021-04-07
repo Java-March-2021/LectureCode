@@ -10,6 +10,10 @@
 </head>
 <body>
 <div class="container">
+<h1>Welcome to Dogs dot Com</h1>
+<a href="/add">Add A Dog</a>
+<hr>
+<h3>All Pups</h3>
 <table class="table  table-dark">
 <thead>
 <tr>
@@ -17,15 +21,29 @@
 <td>Name</td>
 <td>Breed</td>
 <td>Age</td>
+<td>Registered?</td>
+<td>Action</td>
 </tr>
 </thead>
 <tbody>
 <c:forEach items="${allDogs}" var="dog">
 <tr>
 <td>${dog.id }</td>
-<td>${dog.name}</td>
+<td><a href="/${dog.id}">${dog.name}</a></td>
 <td>${dog.breed }</td>
 <td>${dog.age }</td>
+<td>
+<c:choose>
+<c:when test="${dog.tag != null}">
+Registered!
+</c:when>
+<c:otherwise>
+Not Registered
+</c:otherwise>
+</c:choose>
+
+</td>
+<td><a href="/delete/${dog.id}">Delete From DB</a></td>
 </tr>
 </c:forEach>
 </tbody>

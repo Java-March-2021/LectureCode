@@ -11,17 +11,22 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.matthew.dogs.models.Dog;
+import com.matthew.dogs.models.Tag;
 import com.matthew.dogs.services.DogService;
+import com.matthew.dogs.services.TagService;
 
 @Controller
 public class HomeController {
 	@Autowired
 	private DogService dService;
+	@Autowired
+	private TagService tService;
 	
 	@GetMapping("/")
 	public String index(Model viewModel) {
@@ -58,6 +63,32 @@ public class HomeController {
 			return "redirect:/add";
 		}
 		this.dService.createNewDog(name, breed, age);
+		return "redirect:/";
+	}
+	
+	// Show Page
+	@GetMapping("/{id}")
+	public String show(@PathVariable("id") Long id, Model viewModel, @ModelAttribute("tag") Tag tag) {
+		viewModel.addAttribute("dog", this.dService.getOneDog(id));
+		return "show.jsp";
+	}
+	
+	@PostMapping("/tag/{id}")
+	public String addTag(@Valid @ModelAttribute("tag") Tag tag, BindingResult result, @PathVariable("id") Long id, Model viewModel) {
+		if(result.hasErrors()) {
+			viewModel.addAttribute("dog", this.dService.getOneDog(id));
+			return "show.jsp";
+		}
+		Dog dogTagBelongsTo = this.dService.getOneDog(id);
+		tag.setDog(dogTagBelongsTo);
+		this.tService.create(tag);
+		return "redirect:/" + id; 
+		
+	}
+	
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id) {
+		this.dService.deleteDog(id);
 		return "redirect:/";
 	}
 }
