@@ -15,12 +15,23 @@
 <hr>
 <p>Name: ${dog.name}</p>
 <p>Breed: ${dog.breed}</p>
-
+<p>Age: ${dog.age}</p>
+<hr>
+<h2>Toys</h2>
+<ol>
+<c:if test="${empty dog.toys}">
+No Toys Yet!
+</c:if>
+<c:forEach items="${dog.toys }" var="toy">
+<li>${toy.name} (${toy.price}) - ${toy.description }</li>
+</c:forEach>
+</ol>
 <c:choose>
 <c:when test="${dog.tag != null}">
 <h1>Dog Has Been Registered!</h1>
 <p>City: ${dog.tag.city}</p>
 <p>State: ${dog.tag.state}</p>
+
 </c:when>
 <c:otherwise>
 <form:form method="POST" action="/tag/${dog.id}" modelAttribute="tag">
@@ -40,7 +51,7 @@
 </c:otherwise>
 </c:choose>
 
-
+<a href="/edit/${dog.id}" class="btn btn-danger">Edit</a>
 
 </div>
 </body>

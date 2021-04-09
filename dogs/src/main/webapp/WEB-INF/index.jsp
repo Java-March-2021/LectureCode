@@ -11,7 +11,7 @@
 <body>
 <div class="container">
 <h1>Welcome to Dogs dot Com</h1>
-<a href="/add">Add A Dog</a>
+<a href="/add">Add A Dog</a> | <a href="/new">Gift Pup a Toy</a>
 <hr>
 <h3>All Pups</h3>
 <table class="table  table-dark">

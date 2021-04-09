@@ -18,8 +18,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.matthew.dogs.models.Dog;
 import com.matthew.dogs.models.Tag;
+import com.matthew.dogs.models.Toy;
 import com.matthew.dogs.services.DogService;
 import com.matthew.dogs.services.TagService;
+import com.matthew.dogs.services.ToyService;
 
 @Controller
 public class HomeController {
@@ -27,6 +29,8 @@ public class HomeController {
 	private DogService dService;
 	@Autowired
 	private TagService tService;
+	@Autowired
+	private ToyService toyService;
 	
 	@GetMapping("/")
 	public String index(Model viewModel) {
@@ -89,6 +93,37 @@ public class HomeController {
 	@GetMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Long id) {
 		this.dService.deleteDog(id);
+		return "redirect:/";
+	}
+	
+	@GetMapping("/edit/{id}")
+	public String edit(@ModelAttribute("dog") Dog dog, Model viewModel, @PathVariable("id") Long id) {
+		viewModel.addAttribute("dog", this.dService.getOneDog(id));
+		return "edit.jsp";
+	}
+	
+	@PostMapping("/edit/{id}")
+	public String postEdit(@Valid @ModelAttribute("dog") Dog dog, BindingResult result, Model viewModel, @PathVariable("id") Long id) {
+		if(result.hasErrors()) {
+			viewModel.addAttribute("dog", this.dService.getOneDog(id));
+			return "edit.jsp";
+		}
+		this.dService.updateDog(id, dog);
+		return "redirect:/";
+	}
+	
+	@GetMapping("/new")
+	public String createToy(@ModelAttribute("toy") Toy toy, Model viewModel) {
+		viewModel.addAttribute("allDogs", this.dService.getAllPets());
+		return "toys/new.jsp";
+	}
+	
+	@PostMapping("/new")
+	public String create(@Valid @ModelAttribute("toy") Toy toy, BindingResult result, Model viewModel) {
+		if(result.hasErrors()) {
+			viewModel.addAttribute("allDogs", this.dService.getAllPets());
+		}
+		this.toyService.create(toy);
 		return "redirect:/";
 	}
 }
