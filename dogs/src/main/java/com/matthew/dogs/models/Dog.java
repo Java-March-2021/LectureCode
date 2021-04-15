@@ -10,6 +10,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -33,6 +36,14 @@ public class Dog {
 	private String breed;
 	@NotNull
 	private int age;
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name="likes",
+			joinColumns = @JoinColumn(name="dog_id"),
+			inverseJoinColumns = @JoinColumn(name="user_id")
+			)
+	private List<User> likers;
 	
 	@OneToMany(mappedBy="dog", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<Toy> toys;
@@ -130,5 +141,13 @@ public class Dog {
 
 	public void setToys(List<Toy> toys) {
 		this.toys = toys;
+	}
+
+	public List<User> getLikers() {
+		return likers;
+	}
+
+	public void setLikers(List<User> likers) {
+		this.likers = likers;
 	}
 }
